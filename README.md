@@ -4,7 +4,7 @@
   #### Ansible
  ##### Usage
  ```
- # Copy the kubespary file
+ # Copy the kubespary file (In master node)
   git clone https://github.com/kubernetes-sigs/kubespray.git
  # Update apt repo
   sudo apt update
@@ -59,4 +59,16 @@
       kube_node
       calico_rr
       
- # 
+ # Ansible ping test (In master node)
+  ssh-keygen
+  ssh-copy-id node2
+  ssh-copy-id node3
+  ...
+  ansible all -i inventory/mycluster/inventory.ini -m ping -k
+  
+ # Deploy Kubespray with Ansible Playbook - run the playbook as root
+ # The option `--become` is required, as for example writing SSL keys in /etc/,
+ # installing packages and interacting with various systemd daemons.
+ # Without --become the playbook will fail to run!
+  ansible-playbook -i inventory/mycluster/inventory.ini --become --become-user=root cluster.yml
+  
